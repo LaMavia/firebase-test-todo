@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": true,
+        ".write": "auth.uid === $uid",
+        ".indexOn": ["uid"],
+        "profilePictureUrl": {
+          ".validate": "newData.matches(/images\\/profilePictures\\/[^#\\[\\]\\*\\?\\r\\n]+\\.(?:jpg|jpeg|png)/)"
+        },
+        "name": {
+          ".validate": "newData.length >= 1"
+        },
+        "uid": {},
+        "todos": {
+          "$key": {
+            ".validate": "(newData === true && root.child('todos').hasChild($key)) || newData === null"
+          }
+        }
+      }
+    }
+  }
+}
