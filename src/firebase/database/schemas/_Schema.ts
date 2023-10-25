@@ -19,14 +19,12 @@ export abstract class Schema<S, V> {
   abstract cast<T extends V>(data: T): V
 }
 
-export type SchemaType<S extends Schema<any, any>> = S extends Schema<
-  infer _,
-  infer V
->
-  ? V
-  : never
+export type SchemaType<S extends Schema<any, any>> =
+  S extends Schema<infer _, infer V> ? V : never
 
-export class TypeBoxSchema<S extends TSchema> extends Schema<S, Static<S>> {
+export class TypeBoxSchema<
+  S extends TSchema,
+> extends Schema<S, Static<S>> {
   cast<T extends Static<S>>(data: T): Static<S> {
     return Value.Cast<S>(this.schema, data)
   }
