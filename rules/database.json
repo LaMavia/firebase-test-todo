@@ -4,18 +4,43 @@
       "$uid": {
         ".read": true,
         ".write": "auth.uid === $uid",
-        ".indexOn": ["uid"],
+        ".validate": "newData.hasChildren(['profilePictureUrl', 'name'])",
         "profilePictureUrl": {
-          ".validate": "newData.matches(/images\\/profilePictures\\/[^#\\[\\]\\*\\?\\r\\n]+\\.(?:jpg|jpeg|png)/)"
+          ".validate": "newData.isString() && newData.val().matches(/images\\/profilePictures\\/[^#\\[\\]\\*\\?\\r\\n]+\\.(?:jpg|jpeg|png)/)"
         },
         "name": {
-          ".validate": "newData.length >= 1"
+          ".validate": "newData.isString() && newData.val().length >= 1"
         },
-        "uid": {},
         "todos": {
           "$key": {
-            ".validate": "(newData === true && root.child('todos').hasChild($key)) || newData === null"
+            ".validate": "(newData.val() === true && root.child('todos').hasChild($key)) || newData.val() === null"
           }
+        }
+      }
+    },
+    "todos": {
+      "$key": {
+        ".read": true,
+        ".write": "auth.uid === newData.child('creatorUid').val()",
+        ".indexOn": ["createdTimestamp", "creatorUid"],
+        ".validate": "newData.hasChildren(['creatorUid', 'title', 'description', 'done', 'createdTimestamp'])",
+        "creatorUid": {
+          ".validate": "newData.parent().parent().parent().child('users').hasChild(newData.val())"
+        },
+        "title": {
+          ".validate": "newData.val().length >= 1"
+        },
+        "description": {
+          ".validate": "newData.isString()"
+        },
+        "done": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdTimestamp": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
+        "doneTimestamp": {
+          ".validate": "newData.val() === null || (newData.isNumber() && newData.val() >= data.parent().child('createdTimestamp').val())"
         }
       }
     }

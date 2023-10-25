@@ -1,19 +1,16 @@
-import { Type as t } from "@sinclair/typebox"
-import { TypeBoxSchema } from "./_Schema"
-import { User } from "./User"
+import { Type as t } from '@sinclair/typebox'
+import { TypeBoxSchema } from './_Schema'
 
 export const Todo = new TypeBoxSchema(
-  "todos",
+  'todos',
   t.Object({
-    creatorUid: t.Ref(User.schema.properties.uid),
+    creatorUid: t.String({ format: 'uuid' }),
     title: t.String({
-      minLength: 1
+      minLength: 1,
     }),
-    description: t.Optional(t.String({
-      minLength: 1
-    })),
+    description: t.String(),
     done: t.Boolean({ default: false }),
     createdTimestamp: t.Number(),
-    doneTimestamp: t.Number()
-  })
+    doneTimestamp: t.Number(),
+  }),
 )

@@ -6,11 +6,10 @@ export const User = new TypeBoxSchema(
   t.Object({
     profilePictureUrl: t.Optional(
       t.String({
-        format: 'uri-template',
+        format: 'uri',
       }),
     ),
     name: t.String(),
-    uid: t.String({ $id: 'uid' }),
     todos: t.Record(t.String(), t.Boolean()),
   }),
 )
